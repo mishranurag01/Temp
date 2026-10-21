@@ -27,11 +27,38 @@ document.addEventListener("DOMContentLoaded", () => {
   const year = document.getElementById("year");
   if (year) year.textContent = String(new Date().getFullYear());
 
-  // Artwork remains static and calm on touch devices; subtle hover motion is CSS-only.
+  // Keep touch devices calm, but let a tapped artwork retain its luminous selected state.
   const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const artworkNodes = document.querySelectorAll(".interactive-symbol-node");
   if (!finePointer) {
-    document.querySelectorAll(".interactive-symbol-node").forEach((node) => {
+    artworkNodes.forEach((node) => {
       node.classList.remove("animate-float-1", "animate-float-2", "animate-float-3");
     });
   }
+
+  artworkNodes.forEach((node) => {
+    const toggleSelection = () => {
+      const shouldSelect = !node.classList.contains("is-selected");
+      artworkNodes.forEach((other) => {
+        other.classList.remove("is-selected");
+        other.setAttribute("aria-pressed", "false");
+      });
+      if (shouldSelect) {
+        node.classList.add("is-selected");
+        node.setAttribute("aria-pressed", "true");
+      }
+    };
+
+    node.addEventListener("click", toggleSelection);
+    node.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        toggleSelection();
+      }
+      if (event.key === "Escape") {
+        node.classList.remove("is-selected");
+        node.setAttribute("aria-pressed", "false");
+      }
+    });
+  });
 });
