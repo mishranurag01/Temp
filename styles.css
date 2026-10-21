@@ -1,0 +1,252 @@
+/* Exact ivory parchment textured background styling */
+    body {
+      background-color: #FBF8F0;
+      color: #171613;
+      font-family: 'Montserrat', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Counter-parallax deep background layer */
+    #deep-bg-grid {
+      background-image: 
+        radial-gradient(rgba(163, 129, 62, 0.48) 0.5px, transparent 0.5px),
+        radial-gradient(rgba(23, 22, 19, 0.12) 0.35px, #FBF8F0 0.35px);
+      background-size: 38px 38px;
+      background-position: 0 0, 16px 16px;
+      will-change: transform;
+      transform: translate3d(0, 0, 0);
+    }
+
+    /* Filigree ornament lines */
+    .ornament-line {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+    .ornament-line::before,
+    .ornament-line::after {
+      content: "";
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #C5A15D, transparent);
+      flex: 1;
+      max-width: 140px;
+    }
+
+    /* Seamless illustration blending and subtle luxury hover */
+    .seamless-illustration {
+      mix-blend-mode: multiply;
+      isolation: auto;
+      transition: filter 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    
+    /* Interactive Artwork Hover & Celestial Halo Glow */
+    .interactive-symbol-node {
+      cursor: pointer;
+      position: relative;
+      transition: opacity 0.6s ease;
+    }
+    .interactive-symbol-node:hover .seamless-illustration {
+      filter: drop-shadow(0 0 24px rgba(197, 161, 93, 0.48)) drop-shadow(0 12px 28px rgba(197, 161, 93, 0.28));
+      transform: scale(1.03) translateY(-3px);
+    }
+    .interactive-symbol-node .hover-luminous-halo {
+      position: absolute;
+      inset: -12%;
+      border-radius: 9999px;
+      background: radial-gradient(circle, rgba(197, 161, 93, 0.26) 0%, rgba(197, 161, 93, 0.12) 40%, rgba(197, 161, 93, 0.03) 65%, transparent 75%);
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 0.7s ease-out, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 0;
+      mix-blend-mode: multiply;
+    }
+    .interactive-symbol-node:hover .hover-luminous-halo {
+      opacity: 1;
+      transform: scale(1.08);
+    }
+
+    /* Gallery focus state: subtly soften peer artworks when one is hovered */
+    .symbolic-trio-group:hover .interactive-symbol-node:not(:hover) {
+      opacity: 0.75;
+      filter: grayscale(8%);
+    }
+
+    /* 3D perspective wrapper for luxurious tilt and distinct spatial planes */
+    .parallax-perspective {
+      perspective: 1100px;
+      transform-style: preserve-3d;
+    }
+    .parallax-item {
+      will-change: transform;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+    }
+
+    /* Floating / breathing motion keyframes */
+    @keyframes gentleFloat1 {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-7px); }
+    }
+    @keyframes gentleFloat2 {
+      0%, 100% { transform: translateY(-3px); }
+      50% { transform: translateY(5px); }
+    }
+    @keyframes gentleFloat3 {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* Staggered breathing floats */
+    .animate-float-1 {
+      animation: gentleFloat1 9s ease-in-out infinite;
+    }
+    .animate-float-2 {
+      animation: gentleFloat2 10.5s ease-in-out infinite;
+    }
+    .animate-float-3 {
+      animation: gentleFloat3 8.5s ease-in-out infinite;
+    }
+
+    /* Gold foil shimmer and pulse */
+    @keyframes subtlePulse {
+      0%, 100% { opacity: 0.85; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.03); }
+    }
+    .animate-gentle {
+      animation: subtlePulse 6s ease-in-out infinite;
+    }
+
+    /* Celestial star twinkle */
+    @keyframes starGlint {
+      0%, 100% { opacity: 0.25; transform: scale(0.85); }
+      50% { opacity: 0.95; transform: scale(1.15); }
+    }
+    .animate-twinkle-1 { animation: starGlint 3.6s ease-in-out infinite; }
+    .animate-twinkle-2 { animation: starGlint 4.4s ease-in-out infinite 1.8s; }
+    .animate-twinkle-3 { animation: starGlint 5.2s ease-in-out infinite 0.9s; }
+
+    /* Subtle badge breathing glow */
+    @keyframes badgeGlow {
+      0%, 100% { box-shadow: 0 0 0 1px rgba(197,161,93,0.4), 0 4px 14px rgba(23,22,19,0.06); }
+      50% { box-shadow: 0 0 0 1px rgba(197,161,93,0.8), 0 4px 22px rgba(197,161,93,0.22); }
+    }
+    .animate-badge-glow {
+      animation: badgeGlow 4.5s ease-in-out infinite;
+    }
+
+    /* Palpable candlelight radial mouse glow tracker */
+    #cursor-glow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 720px;
+      height: 720px;
+      margin-top: -360px;
+      margin-left: -360px;
+      background: radial-gradient(circle, rgba(197, 161, 93, 0.16) 0%, rgba(197, 161, 93, 0.08) 35%, rgba(197, 161, 93, 0.02) 58%, transparent 72%);
+      pointer-events: none;
+      border-radius: 9999px;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform, opacity;
+      mix-blend-mode: multiply;
+    }
+
+    /* Respect prefers-reduced-motion for accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      .animate-float-1,
+      .animate-float-2,
+      .animate-float-3,
+      .animate-gentle,
+      .animate-twinkle-1,
+      .animate-twinkle-2,
+      .animate-twinkle-3,
+      .animate-badge-glow {
+        animation: none !important;
+        transform: none !important;
+      }
+      #cursor-glow,
+      #deep-bg-grid {
+        display: none !important;
+      }
+      .parallax-item,
+      .parallax-star,
+      .parallax-constellation,
+      .parallax-ambient-aura {
+        transform: none !important;
+      }
+      .interactive-symbol-node:hover .seamless-illustration {
+        transform: none !important;
+      }
+    }
+
+/* Balanced-luxury refinement: brighter paper, quieter ornament, gentler movement. */
+:root {
+  color-scheme: light;
+  --paper: #FBF8F0;
+  --ink: #211F1A;
+  --antique-gold: #B99A5C;
+}
+html { background: var(--paper); }
+body { background-color: var(--paper); color: var(--ink); }
+#deep-bg-grid { opacity: 0.28; }
+#cursor-glow { display: none; }
+.ornament-line::before,
+.ornament-line::after { opacity: 0.75; }
+.interactive-symbol-node { outline: none; }
+.interactive-symbol-node:focus-visible {
+  border-radius: 50%;
+  outline: 1px solid rgba(163, 129, 62, 0.65);
+  outline-offset: 5px;
+}
+.seamless-illustration {
+  transition: filter 450ms ease, transform 450ms ease;
+}
+.interactive-symbol-node:hover .seamless-illustration,
+.interactive-symbol-node:focus-visible .seamless-illustration {
+  filter: drop-shadow(0 8px 15px rgba(116, 88, 38, 0.12));
+  transform: translateY(-2px) scale(1.012);
+}
+.symbolic-trio-group:hover .interactive-symbol-node:not(:hover) {
+  opacity: 0.92;
+  filter: none;
+}
+.animate-float-1 { animation: gentleFloat1 14s ease-in-out infinite; }
+.animate-float-2 { animation: gentleFloat2 16s ease-in-out infinite; }
+.animate-float-3 { animation: gentleFloat3 15s ease-in-out infinite; }
+@keyframes gentleFloat1 {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+@keyframes gentleFloat2 {
+  0%, 100% { transform: translateY(-1px); }
+  50% { transform: translateY(3px); }
+}
+@keyframes gentleFloat3 {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+@media (max-width: 767px) {
+  .parallax-constellation { display: none; }
+  .symbolic-trio-group { margin-top: 0.5rem; }
+  .interactive-symbol-node { animation-duration: 18s; }
+  footer { margin-top: 1rem; }
+}
+@media (max-width: 380px) {
+  main { padding-left: 1.25rem; padding-right: 1.25rem; }
+  h1 { letter-spacing: 0.11em !important; font-size: 1.7rem !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
