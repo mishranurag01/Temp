@@ -250,3 +250,48 @@ body { background-color: var(--paper); color: var(--ink); }
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* Interaction restoration: bring back the original luminous artwork response. */
+.interactive-symbol-node {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.interactive-symbol-node:hover .seamless-illustration,
+.interactive-symbol-node:focus-visible .seamless-illustration,
+.interactive-symbol-node:active .seamless-illustration,
+.interactive-symbol-node.is-selected .seamless-illustration {
+  filter:
+    drop-shadow(0 0 24px rgba(197, 161, 93, 0.52))
+    drop-shadow(0 12px 28px rgba(197, 161, 93, 0.30))
+    drop-shadow(0 0 5px rgba(255, 246, 216, 0.62));
+  transform: translateY(-3px) scale(1.03);
+}
+.interactive-symbol-node:hover .hover-luminous-halo,
+.interactive-symbol-node:focus-visible .hover-luminous-halo,
+.interactive-symbol-node:active .hover-luminous-halo,
+.interactive-symbol-node.is-selected .hover-luminous-halo {
+  opacity: 1;
+  transform: scale(1.08);
+}
+.interactive-symbol-node:focus-visible {
+  outline: 1px solid rgba(163, 129, 62, 0.72);
+  outline-offset: 7px;
+  border-radius: 50%;
+}
+.symbolic-trio-group:hover .interactive-symbol-node:not(:hover):not(.is-selected) {
+  opacity: 0.92;
+  filter: none;
+}
+.interactive-symbol-node.is-selected {
+  opacity: 1 !important;
+  filter: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .interactive-symbol-node:hover .seamless-illustration,
+  .interactive-symbol-node:focus-visible .seamless-illustration,
+  .interactive-symbol-node:active .seamless-illustration,
+  .interactive-symbol-node.is-selected .seamless-illustration {
+    transform: none !important;
+  }
+}
