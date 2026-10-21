@@ -22,43 +22,103 @@ tailwind.config = {
       }
     }
 
-// Keep the small page independent of a framework build step.
+// Single-focus gallery behavior:
+// - Desktop/laptop: hover (or keyboard focus) controls the glow.
+// - Touch screens: the most prominent artwork in the viewport receives the glow.
 document.addEventListener("DOMContentLoaded", () => {
   const year = document.getElementById("year");
   if (year) year.textContent = String(new Date().getFullYear());
 
-  // Keep touch devices calm, but let a tapped artwork retain its luminous selected state.
-  const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-  const artworkNodes = document.querySelectorAll(".interactive-symbol-node");
-  if (!finePointer) {
+  const gallery = document.querySelector(".symbolic-trio-group");
+  const artworkNodes = Array.from(document.querySelectorAll(".interactive-symbol-node"));
+  if (!gallery || !artworkNodes.length) return;
+
+  const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+  const setViewportFocus = (activeNode) => {
     artworkNodes.forEach((node) => {
-      node.classList.remove("animate-float-1", "animate-float-2", "animate-float-3");
+      const isActive = node === activeNode;
+      node.classList.toggle("is-viewport-focus", isActive);
+      node.setAttribute("aria-current", isActive ? "true" : "false");
     });
+  };
+
+  // Do not keep a tap/click selection on desktop: the pointer owns the focus.
+  artworkNodes.forEach((node) => {
+    node.classList.remove("is-selected");
+    node.removeAttribute("aria-pressed");
+    node.setAttribute("role", "group");
+  });
+
+  if (finePointer.matches) {
+    setViewportFocus(null);
+    return;
   }
 
-  artworkNodes.forEach((node) => {
-    const toggleSelection = () => {
-      const shouldSelect = !node.classList.contains("is-selected");
-      artworkNodes.forEach((other) => {
-        other.classList.remove("is-selected");
-        other.setAttribute("aria-pressed", "false");
-      });
-      if (shouldSelect) {
-        node.classList.add("is-selected");
-        node.setAttribute("aria-pressed", "true");
-      }
-    };
+  // Touch layouts: calculate visible area and distance from the viewport's visual centre.
+  // The best-scoring artwork is the only one with a glowing frame at any moment.
+  let frameRequested = false;
+  const updateViewportFocus = () => {
+    frameRequested = false;
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+    const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+    const viewportCenterY = viewportHeight / 2;
+    let bestNode = null;
+    let bestScore = 0;
 
-    node.addEventListener("click", toggleSelection);
-    node.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        toggleSelection();
-      }
-      if (event.key === "Escape") {
-        node.classList.remove("is-selected");
-        node.setAttribute("aria-pressed", "false");
+    artworkNodes.forEach((node) => {
+      const rect = node.getBoundingClientRect();
+      const visibleWidth = Math.max(0, Math.min(rect.right, viewportWidth) - Math.max(rect.left, 0));
+      const visibleHeight = Math.max(0, Math.min(rect.bottom, viewportHeight) - Math.max(rect.top, 0));
+      if (!visibleWidth || !visibleHeight) return;
+
+      const area = Math.max(1, rect.width * rect.height);
+      const visibleRatio = (visibleWidth * visibleHeight) / area;
+      const centerY = Math.max(0, Math.min(viewportCenterY, rect.bottom));
+      const centerDistance = Math.abs((rect.top + rect.bottom) / 2 - centerY) / Math.max(1, viewportHeight / 2);
+      const centrality = 1 - Math.min(1, centerDistance);
+      const score = visibleRatio * 0.65 + centrality * 0.35;
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestNode = node;
       }
     });
+
+    setViewportFocus(bestScore >= 0.12 ? bestNode : null);
+  };
+
+  const requestFocusUpdate = () => {
+    if (frameRequested) return;
+    frameRequested = true;
+    window.requestAnimationFrame(updateViewportFocus);
+  };
+
+  // IntersectionObserver wakes the calculation as artwork enters/leaves view;
+  // scroll/resize handles the changing prominence between those events.
+  const observer = new IntersectionObserver(requestFocusUpdate, {
+    root: null,
+    threshold: [0, 0.15, 0.3, 0.5, 0.7, 0.9, 1]
+  });
+  artworkNodes.forEach((node) => observer.observe(node));
+  window.addEventListener("scroll", requestFocusUpdate, { passive: true });
+  window.addEventListener("resize", requestFocusUpdate, { passive: true });
+  window.addEventListener("orientationchange", requestFocusUpdate, { passive: true });
+  requestFocusUpdate();
+
+  // Handle a device that changes between touch and mouse input after load.
+  finePointer.addEventListener?.("change", (event) => {
+    if (event.matches) {
+      observer.disconnect();
+      window.removeEventListener("scroll", requestFocusUpdate);
+      window.removeEventListener("resize", requestFocusUpdate);
+      window.removeEventListener("orientationchange", requestFocusUpdate);
+      setViewportFocus(null);
+    } else {
+      artworkNodes.forEach((node) => observer.observe(node));
+      window.addEventListener("scroll", requestFocusUpdate, { passive: true });
+      window.addEventListener("resize", requestFocusUpdate, { passive: true });
+      window.addEventListener("orientationchange", requestFocusUpdate, { passive: true });
+      requestFocusUpdate();
+    }
   });
 });
